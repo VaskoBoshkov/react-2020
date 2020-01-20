@@ -4,20 +4,21 @@ import WeatherCard from "./WeatherCard/component";
 
 const WeatherEngine = ({ location }) => {
   // init for our state variables
-  const [query, setQuery] = useState("");
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState(""); // for user query
+  const [error, setError] = useState(false); // for error handeling
+  const [loading, setLoading] = useState(false); // for loading state
   const [weather, setWeather] = useState({
+    // to display and store weather for specific cities
     temp: null,
     city: null,
     condition: null,
     country: null
   });
 
-  //defining the data fetching function
+  //defining the data fetchin function
   const getWeather = async q => {
-    setQuery("");
-    setLoading(true);
+    setQuery(""); // reset the query to empty
+    setLoading(true); // set loading to true while we fetch the results
     try {
       const apiRes = await fetch(
         `http://api.openweathermap.org/data/2.5/weather?q=${q}&units=metric&APPID=c80b69787ac9c776d1cf86f8a6c50ce7`
@@ -30,7 +31,7 @@ const WeatherEngine = ({ location }) => {
         country: resJSON.country
       });
     } catch (error) {
-      setError(true);
+      setError(true); // If there is any error just set error to true
     }
     setLoading(false);
   };
@@ -39,14 +40,14 @@ const WeatherEngine = ({ location }) => {
     e.preventDefault();
     getWeather(query);
   };
-  // this hook will make the code run only once the component is mounted and never again (remeber the empty dependency array)
+  // this hook will make the code run only once the component is mounted and will only run when Location changes which won't happen
   useEffect(() => {
     getWeather(location);
   }, [location]);
 
   return (
     <div>
-      {!loading && !error ? (
+      {!loading && !error ? ( // If there is no error and no loading
         <div>
           <WeatherCard
             temp={weather.temp}
@@ -59,9 +60,9 @@ const WeatherEngine = ({ location }) => {
             <button onClick={e => handleSearch(e)}>Search</button>
           </form>
         </div>
-      ) : loading ? (
+      ) : loading ? ( // if there is loading
         <div style={{ color: "black" }}>Loading</div>
-      ) : !loading && error ? (
+      ) : !loading && error ? ( // if there is an error and no loading
         <div style={{ color: "black" }}>
           There has been an error!
           <br />
